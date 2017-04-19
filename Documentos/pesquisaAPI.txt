@@ -1,0 +1,40 @@
+AWSCredentials credentials = new ProfileCredentialsProvider("default").getCredentials();
+AmazonEC2 ec2 = new AmazonEC2Client(credentials);
+
+ec2.setEndpoint("ec2.us-east-1.amazonaws.com");
+
+Listar instancias:
+List<Instance> instances = null;
+DescribeEnvironmentResourcesResult res = beanstalkClient.describeEnvironmentResources(request);
+instances = res.getEnvironmentResources().getInstances();
+for (Instance instance : instances) {
+	…
+}
+
+
+Criar Instância:
+RunInstancesRequest runInstancesRequest = new RunInstancesRequest();
+    		        	
+runInstancesRequest.withImageId("ami-0032e468")
+	                     .withInstanceType("t1.micro")
+	                     .withMinCount(1)
+	                     .withMaxCount(1)
+	                     .withKeyName("ronaldo")
+	                     .withSecurityGroups("default");
+	  
+ec2.runInstances(runInstancesRequest);
+
+
+Estado atual:
+final InstanceStateType state = InstanceStateType.valueOf(instance.getState().getCode());
+
+switch (state) {
+	case PENDING:
+	case RUNNING:
+	case STOPPING:
+	case SHUTTING_DOWN:
+	case STOPPED:
+	case TERMINATED:
+	default:
+}
+InstanceStateConstants.RUNNING
