@@ -1,1 +1,3 @@
-# awsmanager-cloud-unifor
+# Gerenciador de instâncias AWS EC2
+
+UNIFOR >> ADS >> CloudComputing
