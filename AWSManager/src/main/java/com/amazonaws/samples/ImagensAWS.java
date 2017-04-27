@@ -10,7 +10,7 @@ import com.amazonaws.services.ec2.model.RunInstancesRequest;
 
 public class ImagensAWS {
 	
-	public String criar() throws Exception {	
+	public static String criar() throws Exception {	
 		
 		Image linuxAmazon = new Image();
 		linuxAmazon.setId("ami-c58c1dd3");
@@ -36,16 +36,6 @@ public class ImagensAWS {
 				imageLista[1].getName() ,
 				imageLista[2].getName()
 		};
-		
-		AWSCredentials credentials = new ProfileCredentialsProvider("default").getCredentials();
-        AmazonEC2 ec2 = new AmazonEC2Client(credentials);
-        
-        
-        JOptionPane.showMessageDialog(null, "A imagem selecionada será criada em US-EAST"+
-        									"\nEsta é a região mais barata atualmente."
-        									, "Imagens - AVISO", JOptionPane.INFORMATION_MESSAGE);
-        
-        ec2.setEndpoint("ec2.us-east-1.amazonaws.com");
         
         String input = (String) JOptionPane.showInputDialog(null, "Selecione a imagem para criar",
 		        "AWSManager - Images", JOptionPane.QUESTION_MESSAGE, null,
@@ -54,20 +44,35 @@ public class ImagensAWS {
        
         for(int n = 0; n<3;n++){
         	if(input == imageLista[n].getName()){
-        		RunInstancesRequest runInstancesRequest = new RunInstancesRequest();
-            	runInstancesRequest.withImageId(imageLista[n].getId())
-        	                     .withInstanceType("t2.micro")
-        	                     .withMinCount(1)
-        	                     .withMaxCount(1)
-        	                     .withKeyName("uniforTests")
-        	                     .withSecurityGroups("default");
-            	ec2.runInstances(runInstancesRequest);
-            	continue;
+        		ImagensAWS.instanciar(imageLista, n);
+            	return "Id da Imagem: "+imageLista[n].getId()+"\n"+
+		         	   "Tipo: "+"t2.micro\n"+
+		         	   "Nome: "+imageLista[n].getName()+"\n"+
+		         	   "Criada com sucesso! Instancia será iniciada.";
         	}
-        	if (n == 2)
-        		return "Nenhuma Imagem foi selecionada.";
-        }    	
-    	return "Criada com sucesso! Instancia será iniciada.";
+        }
+		return "Nenhuma Imagem foi selecionada.";
     }
 
+	@SuppressWarnings("deprecation")
+	public static void instanciar(Image[] imageLista,int n){
+		AWSCredentials credentials = new ProfileCredentialsProvider("default").getCredentials();
+		AmazonEC2 ec2 = new AmazonEC2Client(credentials);
+        
+        JOptionPane.showMessageDialog(null, "A imagem selecionada será criada em US-EAST"+
+        									"\nEsta é a região mais barata atualmente."
+        									, "Imagens - AVISO", JOptionPane.INFORMATION_MESSAGE);
+        
+        ec2.setEndpoint("ec2.us-east-1.amazonaws.com");
+		
+		RunInstancesRequest runInstancesRequest = new RunInstancesRequest();
+    	runInstancesRequest.withImageId(imageLista[n].getId())
+	                     .withInstanceType("t2.micro")
+	                     .withMinCount(1)
+	                     .withMaxCount(1)
+	                     .withKeyName("uniforTests")
+	                     .withSecurityGroups("default");
+    	ec2.runInstances(runInstancesRequest);
+    	
+	}
 }
