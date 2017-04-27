@@ -6,33 +6,32 @@ public class Main {
 	
 	public static int ligado = 0;
 	private static String[] choicesMain = {  "Selecione","IMAGENS","INSTANCIAS" };
-	private static String input;
 	
 	public static void main(String[] args) {
 		
 		while(ligado == 0){
-		    input = (String) JOptionPane.showInputDialog(null, "Selecione o que você quer gerenciar:",
-		        "AWSManager", JOptionPane.QUESTION_MESSAGE, null,
-		        choicesMain, // Array of choices
-		        choicesMain[0]); // Initial choice
+		    String input = (String) JOptionPane.
+		    						showInputDialog(null, 
+		    										"Selecione o que você quer gerenciar:",
+													"AWSManager", JOptionPane.QUESTION_MESSAGE, null,
+													choicesMain, 
+													choicesMain[0]);
 		    
-		    if(input == "INSTANCIAS"){
+		    if(input == choicesMain[2]){
 		    	Main.telaInstancias();
-		    }else if(input == "IMAGENS"){
+		    }else if(input == choicesMain[1]){
 		    	Main.telaImagens();		    	
 		    }else{
 		    	Main.still();
 		    }
 		}
-
 		JOptionPane.showMessageDialog(null, "Até mais!\nGrupo - Andre 1, Andre 2, Português, Jay-Gay");
 	}
 	
 	
-	public static void telaImagens(){
-		ImagensAWS ec2 = new ImagensAWS();
+	public static void telaImagens(){	
     	try {
-			JOptionPane.showMessageDialog(null, ec2.criar(), "Start Image",JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, ImagensAWS.criar(), "Start Image",JOptionPane.INFORMATION_MESSAGE);
 			Main.still();
 			
 		} catch (Exception e) {
@@ -43,10 +42,22 @@ public class Main {
 	
 	public static void telaInstancias(){
 	    String[] imagemOptions = { "Selecione","Listar","Iniciar","Parar","Remover" };
-	    String inputImageOptions = (String) JOptionPane.showInputDialog(null, "O que você quer fazer?",
+	    
+	    String input = (String) JOptionPane.showInputDialog(null, "O que você quer fazer?",
 	        "AWSManager - INSTANCIAS", JOptionPane.QUESTION_MESSAGE, null,
 	        imagemOptions, // Array of choices
 	        imagemOptions[0]); // Initial choice
+	    
+	    //TODO
+
+			try {
+			    if(input == imagemOptions[1])
+				InstancesAWS.main();
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, e.getMessage());
+				e.printStackTrace();
+			}
+	    
 	    Main.still();
 
 	}
