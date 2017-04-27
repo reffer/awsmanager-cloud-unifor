@@ -17,6 +17,7 @@ public class QueryExample {
     
     public static void main(String[] args) throws Exception {
 
+        System.out.println("Start Query");
     	AWSCredentials credentials = new ProfileCredentialsProvider("default").getCredentials();
         AmazonEC2 ec2 = new AmazonEC2Client(credentials);
         
@@ -32,5 +33,6 @@ public class QueryExample {
         }
 
         System.out.println("Amazon EC2 instance(s): " + instances.size());
+        System.out.println("End Query");
     }
 }
