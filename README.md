@@ -3,11 +3,12 @@
 UNIFOR >> ADS >> CloudComputing
 
 - [X] Criar Projeto no Git
-- [ ] Desenvolver Layout
-- [ ] Implementar Layout
-- [ ] Implementar *Listar Imagens*
-- [ ] Implementar *Subir (Start) Instancia*
-- [ ] Implementar *Parar Instância*
-- [ ] Implementar *Remover Instância (terminate)*
-- [ ] Implementar *Listar Instancia*
+- [X] Desenvolver Layout
+- [X] Implementar Layout
+- [X] *Listar Imagens*
+- [X] *Start Imagens*
+- [ ] *Subir (Start) Instancia*
+- [ ] *Parar Instância*
+- [ ] *Remover Instância (terminate)*
+- [X] *Listar Instancia*
 
