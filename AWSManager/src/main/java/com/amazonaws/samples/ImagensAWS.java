@@ -1,12 +1,17 @@
 package com.amazonaws.samples;
 
+import java.util.Collection;
+
 import javax.swing.JOptionPane;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.services.applicationdiscovery.model.Tag;
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.ec2.model.RunInstancesRequest;
+import com.amazonaws.services.ec2.model.TagSpecification;
+import com.amazonaws.services.lightsail.model.StopInstanceRequest;
 
 public class ImagensAWS {
 	

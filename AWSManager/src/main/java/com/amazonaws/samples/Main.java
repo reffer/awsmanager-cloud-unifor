@@ -13,10 +13,15 @@ public class Main {
 		    String input = (String) JOptionPane.
 		    						showInputDialog(null, 
 		    										"Selecione o que você quer gerenciar:",
-													"AWSManager", JOptionPane.QUESTION_MESSAGE, null,
+													"AWSManager", 
+													JOptionPane.QUESTION_MESSAGE, 
+													null,
 													choicesMain, 
 													choicesMain[0]);
 		    
+		    
+		    //choicesMain[1] Imagem
+		    //choisesMain[2] Instancia
 		    if(input == choicesMain[2]){
 		    	Main.telaInstancias();
 		    }else if(input == choicesMain[1]){
@@ -25,13 +30,19 @@ public class Main {
 		    	Main.still();
 		    }
 		}
-		JOptionPane.showMessageDialog(null, "Até mais!\nGrupo - Andre 1, Andre 2, Português, Jay-Gay");
+		JOptionPane
+		.showMessageDialog(null, "Até mais!\nGrupo - Andre 1, Andre 2, Português, Jay-Gay");
 	}
 	
 	
 	public static void telaImagens(){	
     	try {
-			JOptionPane.showMessageDialog(null, ImagensAWS.criar(), "Start Image",JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane
+			.showMessageDialog(
+					null, 
+					ImagensAWS.criar(), 
+					"Start Image",
+					JOptionPane.INFORMATION_MESSAGE);
 			Main.still();
 			
 		} catch (Exception e) {
@@ -41,17 +52,7 @@ public class Main {
 	}
 	
 	public static void telaInstancias(){
-	    String[] imagemOptions = { "Selecione","Listar","Iniciar","Parar","Remover" };
-	    
-	    String input = (String) JOptionPane.showInputDialog(null, "O que você quer fazer?",
-	        "AWSManager - INSTANCIAS", JOptionPane.QUESTION_MESSAGE, null,
-	        imagemOptions, // Array of choices
-	        imagemOptions[0]); // Initial choice
-	    
-	    //TODO
-
 			try {
-			    if(input == imagemOptions[1])
 				InstancesAWS.main();
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, e.getMessage());
