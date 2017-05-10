@@ -7,3 +7,7 @@ https://aws.amazon.com/pt/sdk-for-java/
 
 
 https://aws.amazon.com/pt/s3/
+
+video
+
+https://www.youtube.com/watch?v=zzNlwGaccs4
