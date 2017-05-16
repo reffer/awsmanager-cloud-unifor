@@ -1,4 +1,4 @@
-Link para informações do S3 
+Link para informaÃ§Ãµes do S3 
 
 
 
@@ -11,3 +11,224 @@ https://aws.amazon.com/pt/s3/
 video
 
 https://www.youtube.com/watch?v=zzNlwGaccs4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AWS JAVA S3
+
+5GB gratuitos
+
+AWSCredentials credentials = new BasicAWSCredentials("YourAccessKeyID", "YourSecretAccessKey");
+AmazonS3 s3client = new AmazonS3Client(credentials);
+
+
+_________________________________________________________________________________
+Criar Bucket:
+
+String bucketName = "javatutorial-net-example-bucket";
+s3client.createBucket(bucketName);
+
+_________________________________________________________________________________
+Listar Buckets:
+public void listAllBuckets() {
+    // List all the buckets
+    List<Bucket> buckets = s3.listBuckets();
+    for (Bucket next : buckets) {
+      System.out.println(next.getName());
+    }
+}
+
+_________________________________________________________________________________
+Listar conteÃºdo do Bucket:
+public void listBucketContent(String bucketName) {
+    ObjectListing listing = s3.listObjects(new ListObjectsRequest().withBucketName(bucketName));
+    for (S3ObjectSummary objectSummary : listing.getObjectSummaries()) {
+      System.out.println(" -> " + objectSummary.getKey() + "  " +
+              "(size = " + objectSummary.getSize()/1024 + " KB)");
+    }
+  }
+
+
+_________________________________________________________________________________
+Listar arquivos do Bucket:
+
+List<S3ObjectSummary> s3objects = s3.listObjects(bucketName,prefix).getObjectSummaries();
+
+_________________________________________________________________________________
+Listar arquivos da pasta:
+
+public class Test
+{
+	public static void main(String[] args) throws Exception {
+		//   c:\fabio
+		String caminho = javax.swing.JOptionPane.showInputDialog("digite o diretorio a ser listado");
+		StringBuilder sb = new StringBuilder();
+		File raiz = new File(caminho);
+		for(File f: raiz.listFiles()) {
+			if(f.isFile()) {
+				System.out.println(f.getName());
+				sb.append(f.getName());
+				sb.append("\n");
+			}
+		}
+		javax.swing.JOptionPane.showMessageDialog(null, sb.toString());
+	}
+}
+
+OU
+
+private String diretorio = "B:\\distribuicao\\jakarta-bi\\webapps\\bi10.02\\WEB-INF\\lib";
+
+/**
+ * 
+ */
+public visualizarArquivos() throws IOException {
+
+	File file = new File(diretorio);
+	File afile[] = file.listFiles();
+	int i = 0;
+	for (int j = afile.length; i < j; i++) {
+		File arquivos = afile[i];
+		System.out.println(arquivos.getName());
+	}
+
+}
+
+/**
+ * @param args
+ */
+public static void main(String[] args) {
+	try {
+		visualizarArquivos v = new visualizarArquivos();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+}
+
+_________________________________________________________________________________
+Download:
+public void readS3ObjectUsingByteArray(String bucketName, String key, String outputFileName) throws IOException {
+    S3Object s3object = s3.getObject(new GetObjectRequest(
+            bucketName, key));
+
+    InputStream stream = s3object.getObjectContent();
+    byte[] content = new byte[BUFFER_SIZE];
+
+    BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFileName));
+    int totalSize = 0;
+    int bytesRead;
+    while ((bytesRead = stream.read(content)) != -1) {
+      System.out.println(String.format("%d bytes read from stream", bytesRead));
+      outputStream.write(content, 0, bytesRead);
+      totalSize += bytesRead;
+    }
+    System.out.println("Total Size of file in bytes = "+totalSize);
+    // close resource even during exception
+    outputStream.close();
+  }
+_________________________________________________________________________________
+Upload Example:
+
+String fileName = folderName + SUFFIX + "testvideo.mp4";
+s3client.putObject(new PutObjectRequest(bucketName, fileName, 
+		new File("C:\\Users\\user\\Desktop\\testvideo.mp4")));
+
+OU
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AbortMultipartUploadRequest;
+import com.amazonaws.services.s3.model.CompleteMultipartUploadRequest;
+import com.amazonaws.services.s3.model.InitiateMultipartUploadRequest;
+import com.amazonaws.services.s3.model.InitiateMultipartUploadResult;
+import com.amazonaws.services.s3.model.PartETag;
+import com.amazonaws.services.s3.model.UploadPartRequest;
+
+public class UploadObjectMPULowLevelAPI {
+
+    public static void main(String[] args) throws IOException {
+        String existingBucketName  = "*** Provide-Your-Existing-BucketName ***"; 
+        String keyName             = "*** Provide-Key-Name ***";
+        String filePath            = "*** Provide-File-Path ***";   
+        
+        AmazonS3 s3Client = new AmazonS3Client(new ProfileCredentialsProvider());        
+
+        // Create a list of UploadPartResponse objects. You get one of these
+        // for each part upload.
+        List<PartETag> partETags = new ArrayList<PartETag>();
+
+        // Step 1: Initialize.
+        InitiateMultipartUploadRequest initRequest = new 
+             InitiateMultipartUploadRequest(existingBucketName, keyName);
+        InitiateMultipartUploadResult initResponse = 
+        	                   s3Client.initiateMultipartUpload(initRequest);
+
+        File file = new File(filePath);
+        long contentLength = file.length();
+        long partSize = 5242880; // Set part size to 5 MB.
+
+        try {
+            // Step 2: Upload parts.
+            long filePosition = 0;
+            for (int i = 1; filePosition < contentLength; i++) {
+                // Last part can be less than 5 MB. Adjust part size.
+            	partSize = Math.min(partSize, (contentLength - filePosition));
+            	
+                // Create request to upload a part.
+                UploadPartRequest uploadRequest = new UploadPartRequest()
+                    .withBucketName(existingBucketName).withKey(keyName)
+                    .withUploadId(initResponse.getUploadId()).withPartNumber(i)
+                    .withFileOffset(filePosition)
+                    .withFile(file)
+                    .withPartSize(partSize);
+
+                // Upload part and add response to our list.
+                partETags.add(
+                		s3Client.uploadPart(uploadRequest).getPartETag());
+
+                filePosition += partSize;
+            }
+
+            // Step 3: Complete.
+            CompleteMultipartUploadRequest compRequest = new 
+                         CompleteMultipartUploadRequest(
+                                    existingBucketName, 
+                                    keyName, 
+                                    initResponse.getUploadId(), 
+                                    partETags);
+
+            s3Client.completeMultipartUpload(compRequest);
+        } catch (Exception e) {
+            s3Client.abortMultipartUpload(new AbortMultipartUploadRequest(
+                    existingBucketName, keyName, initResponse.getUploadId()));
+        }
+    }
+}
+
+_________________________________________________________________________________
+Referencia:
+
+http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/s3/transfer/TransferManager.html
+https://javatutorial.net/java-s3-example
+http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjSingleOpJava.html
+ref2345
